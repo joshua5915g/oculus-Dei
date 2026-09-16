@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Loader2, CheckCircle2, ShieldAlert, Cpu, Terminal, Radio } from "lucide-react";
+import { Loader2, CheckCircle2, Terminal, Radio, Sparkles, Cpu } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface AnalysisProgressProps {
   mediaType: "image" | "video";
@@ -15,22 +16,22 @@ interface Step {
 
 export default function AnalysisProgress({ mediaType }: AnalysisProgressProps) {
   const [currentStep, setCurrentStep] = useState(0);
-  const [progressPercent, setProgressPercent] = useState(12);
+  const [progressPercent, setProgressPercent] = useState(14);
   const [terminalLogs, setTerminalLogs] = useState<string[]>([
-    "INITIALIZING TENSOR PIPELINE...",
-    "EXTRACTING SPATIAL MESH KEYPOINTS...",
+    "INITIALIZING OCULUS DEI TENSOR ENGINE...",
+    "DECODING BASELINE FRAME MATRIX...",
   ]);
 
   const steps: Step[] = [
     {
       id: 0,
       label: "Spatial Geometry & Facial Landmarks",
-      description: "Isolating 68 perioral and ocular mesh points for warping anomalies",
+      description: "Isolating 68 perioral and ocular mesh keypoints for warp vectors",
     },
     {
       id: 1,
       label: "2D FFT Frequency Domain Analysis",
-      description: "Uncovering periodic high-frequency checkerboard generator artifacts",
+      description: "Detecting periodic high-frequency checkerboard generator artifacts",
     },
     {
       id: 2,
@@ -39,31 +40,21 @@ export default function AnalysisProgress({ mediaType }: AnalysisProgressProps) {
     },
     {
       id: 3,
-      label: mediaType === "video" ? "Cross-Modal Audio-Visual Sync Telemetry" : "Specular Corneal Reflection Gaze Analysis",
+      label: mediaType === "video" ? "Audio-Visual Cross-Modal Desync Telemetry" : "Specular Corneal Gaze Disparity Analysis",
       description: mediaType === "video" 
         ? "Correlating acoustic phonemes with labial viseme motion curves"
-        : "Checking corneal light vector coherence across ocular spheres",
+        : "Checking corneal reflection vector coherence across ocular spheres",
     },
   ];
 
   useEffect(() => {
     const stepInterval = setInterval(() => {
-      setCurrentStep((prev) => {
-        if (prev < steps.length - 1) {
-          return prev + 1;
-        }
-        return prev;
-      });
+      setCurrentStep((prev) => (prev < steps.length - 1 ? prev + 1 : prev));
     }, 550);
 
     const progressInterval = setInterval(() => {
-      setProgressPercent((prev) => {
-        if (prev < 95) {
-          return prev + Math.floor(Math.random() * 6 + 3);
-        }
-        return prev;
-      });
-    }, 180);
+      setProgressPercent((prev) => (prev < 96 ? prev + Math.floor(Math.random() * 5 + 3) : prev));
+    }, 160);
 
     const logMessages = [
       "[INFO] Ingesting uncompressed YUV/RGB buffers...",
@@ -80,54 +71,68 @@ export default function AnalysisProgress({ mediaType }: AnalysisProgressProps) {
         setTerminalLogs((prev) => [...prev.slice(-4), logMessages[logIdx]]);
         logIdx++;
       }
-    }, 380);
+    }, 360);
 
     return () => {
       clearInterval(stepInterval);
       clearInterval(progressInterval);
       clearInterval(logInterval);
     };
-  }, [mediaType]);
+  }, [mediaType, steps.length]);
 
   return (
-    <div className="w-full rounded-xl cyber-panel p-6 border border-cyan-500/30 relative overflow-hidden">
-      {/* Background Pulse Glow */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none" />
+    <motion.div
+      initial={{ opacity: 0, y: 15 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="w-full obsidian-card rounded-sm p-6 sm:p-8 relative overflow-hidden"
+    >
+      <div className="corner-pin-tl" />
+      <div className="corner-pin-tr" />
+      <div className="corner-pin-bl" />
+      <div className="corner-pin-br" />
+      <div className="top-glow-gold" />
+
+      {/* Ambient background glow */}
+      <div className="absolute top-0 right-1/4 w-80 h-80 bg-[#d4af37]/5 rounded-full blur-3xl pointer-events-none" />
 
       {/* Header with Live Progress */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-        <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-lg bg-cyan-950/60 border border-cyan-400/50 text-cyan-400">
-            <Radio className="w-5 h-5 animate-pulse text-cyan-400" />
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-7 relative z-10">
+        <div className="flex items-center gap-3.5">
+          <div className="w-11 h-11 rounded-sm bg-[#18140e] border border-[#d4af37]/40 flex items-center justify-center shadow-[0_0_15px_rgba(212,175,55,0.2)]">
+            <Radio className="w-5 h-5 text-[#f7e7c4] animate-pulse" />
           </div>
           <div>
-            <h3 className="text-base font-semibold text-white font-mono flex items-center gap-2">
-              DEEP LEARNING FORENSIC SCAN IN PROGRESS
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] font-mono tracking-[0.25em] text-[#d4af37] uppercase">
+                ACTIVE PIPELINE
+              </span>
+              <span className="w-1.5 h-1.5 rounded-full bg-[#00f0ff] animate-ping" />
+            </div>
+            <h3 className="text-lg font-bold text-white font-cinzel tracking-wider">
+              DEEP LEARNING FORENSIC INFERENCE
             </h3>
-            <p className="text-xs text-slate-400 font-mono">
-              Harvard-grade neural pipeline processing raw media tensors
-            </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-3 bg-black/60 px-4 py-2 rounded-lg border border-cyan-500/30">
-          <Loader2 className="w-4 h-4 text-cyan-400 animate-spin" />
-          <span className="text-sm font-bold font-mono text-cyan-300">
+        <div className="flex items-center gap-3 bg-[#05070c] px-4 py-2 rounded-sm border border-[#d4af37]/30 shadow-inner">
+          <Loader2 className="w-4 h-4 text-[#d4af37] animate-spin" />
+          <span className="text-base font-bold font-mono text-[#f7e7c4]">
             {progressPercent}%
           </span>
         </div>
       </div>
 
-      {/* Progress Bar */}
-      <div className="w-full bg-slate-900 rounded-full h-2 mb-6 overflow-hidden border border-slate-800 p-[1px]">
-        <div
-          className="bg-gradient-to-r from-cyan-500 via-blue-500 to-cyan-400 h-full rounded-full transition-all duration-300 shadow-[0_0_12px_#00f0ff]"
+      {/* Progress Bar with Luxury Gold Glow */}
+      <div className="w-full bg-[#040609] rounded-sm h-2.5 mb-7 overflow-hidden border border-[#d4af37]/25 p-[1px] relative">
+        <motion.div
+          className="h-full rounded-sm bg-gradient-to-r from-[#8c6d4f] via-[#d4af37] to-[#f7e7c4] shadow-[0_0_15px_rgba(212,175,55,0.7)]"
           style={{ width: `${progressPercent}%` }}
+          transition={{ ease: "easeOut", duration: 0.2 }}
         />
       </div>
 
-      {/* Pipeline Stages */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6">
+      {/* Pipeline Stages Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 mb-6 relative z-10">
         {steps.map((step) => {
           const isDone = currentStep > step.id;
           const isCurrent = currentStep === step.id;
@@ -135,29 +140,29 @@ export default function AnalysisProgress({ mediaType }: AnalysisProgressProps) {
           return (
             <div
               key={step.id}
-              className={`p-3.5 rounded-lg border transition-all font-mono text-xs ${
+              className={`p-4 rounded-sm border transition-all duration-300 font-mono text-xs ${
                 isDone
-                  ? "bg-emerald-950/20 border-emerald-500/40 text-emerald-300"
+                  ? "bg-[#06140e]/70 border-[#00ff88]/40 text-[#80ffc0] shadow-[0_0_15px_rgba(0,255,136,0.08)]"
                   : isCurrent
-                  ? "bg-cyan-950/30 border-cyan-400/60 text-cyan-200 shadow-[0_0_15px_rgba(0,240,255,0.1)]"
-                  : "bg-slate-900/40 border-slate-800/60 text-slate-500"
+                  ? "bg-[#18130a]/80 border-[#d4af37]/70 text-[#f7e7c4] shadow-[0_0_20px_rgba(212,175,55,0.18)]"
+                  : "bg-[#06080d]/50 border-white/5 text-[#635f59]"
               }`}
             >
-              <div className="flex items-center gap-2 mb-1">
+              <div className="flex items-center gap-2.5 mb-1.5">
                 {isDone ? (
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <CheckCircle2 className="w-4 h-4 text-[#00ff88] shrink-0" />
                 ) : isCurrent ? (
-                  <Loader2 className="w-4 h-4 text-cyan-400 animate-spin shrink-0" />
+                  <Loader2 className="w-4 h-4 text-[#d4af37] animate-spin shrink-0" />
                 ) : (
-                  <div className="w-4 h-4 rounded-full border border-slate-700 flex items-center justify-center text-[9px] shrink-0">
+                  <div className="w-4 h-4 rounded-sm border border-white/10 flex items-center justify-center text-[9px] shrink-0 text-[#a89f91]">
                     {step.id + 1}
                   </div>
                 )}
-                <span className="font-semibold text-slate-200 text-xs">
+                <span className={`font-semibold text-xs tracking-wider ${isCurrent ? "text-white" : isDone ? "text-[#a0ffcc]" : "text-[#807a72]"}`}>
                   {step.label}
                 </span>
               </div>
-              <p className="text-[11px] text-slate-400 pl-6 leading-relaxed">
+              <p className="text-[11px] text-[#a89f91] pl-6 leading-relaxed font-montserrat">
                 {step.description}
               </p>
             </div>
@@ -165,23 +170,23 @@ export default function AnalysisProgress({ mediaType }: AnalysisProgressProps) {
         })}
       </div>
 
-      {/* Telemetry Console / Terminal Log */}
-      <div className="rounded-lg bg-black/80 border border-slate-800 p-3.5 font-mono text-xs">
-        <div className="flex items-center gap-2 text-slate-500 pb-2 mb-2 border-b border-slate-800/80 text-[11px]">
-          <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+      {/* Real-Time Terminal Log */}
+      <div className="rounded-sm bg-[#020306] border border-white/10 p-4 font-mono text-xs relative">
+        <div className="flex items-center gap-2 text-[#a89f91] pb-2 mb-2 border-b border-white/5 text-[11px] tracking-wider">
+          <Terminal className="w-3.5 h-3.5 text-[#d4af37]" />
           <span>REAL-TIME INFERENCE LOG</span>
         </div>
-        <div className="space-y-1 text-slate-400 text-[11px]">
+        <div className="space-y-1.5 text-[11px]">
           {terminalLogs.map((log, idx) => (
             <div key={idx} className="flex items-center gap-2">
-              <span className="text-cyan-500/70 select-none">&gt;</span>
-              <span className={idx === terminalLogs.length - 1 ? "text-cyan-300" : "text-slate-400"}>
+              <span className="text-[#d4af37]/70 select-none">&gt;</span>
+              <span className={idx === terminalLogs.length - 1 ? "text-[#f7e7c4] font-medium" : "text-[#7f776d]"}>
                 {log}
               </span>
             </div>
           ))}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

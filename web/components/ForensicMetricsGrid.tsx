@@ -3,6 +3,7 @@
 import React from "react";
 import { ForensicBreakdown } from "@/lib/types";
 import { ScanFace, Radio, Eye, Layers } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface ForensicMetricsGridProps {
   breakdown: ForensicBreakdown;
@@ -46,49 +47,58 @@ export default function ForensicMetricsGrid({ breakdown }: ForensicMetricsGridPr
         const Icon = item.icon;
         const isHigh = item.value >= 70;
         return (
-          <div
+          <motion.div
             key={idx}
-            className="rounded-xl cyber-panel p-4 border border-slate-800 flex flex-col justify-between font-mono"
+            whileHover={{ y: -4, transition: { duration: 0.2 } }}
+            className="obsidian-card rounded-sm p-5 border border-white/10 flex flex-col justify-between relative group"
           >
+            <div className="corner-pin-tl" />
+            <div className="corner-pin-br" />
+            <div className="top-glow-gold opacity-40 group-hover:opacity-100 transition-opacity" />
+
             <div>
-              <div className="flex items-center justify-between mb-2">
-                <div className="p-2 rounded-lg bg-cyan-950/40 border border-cyan-500/30 text-cyan-400">
+              <div className="flex items-center justify-between mb-3">
+                <div className="w-9 h-9 rounded-sm bg-[#18140e] border border-[#d4af37]/35 flex items-center justify-center text-[#f7e7c4] shadow-[0_0_12px_rgba(212,175,55,0.2)]">
                   <Icon className="w-4 h-4" />
                 </div>
                 <span
-                  className={`text-[10px] px-2 py-0.5 rounded font-bold uppercase ${
+                  className={`text-[9px] px-2.5 py-0.5 rounded-sm font-mono font-bold uppercase tracking-widest ${
                     isHigh
-                      ? "bg-red-950 border border-red-500/60 text-red-300"
-                      : "bg-slate-900 border border-slate-700 text-slate-400"
+                      ? "bg-[#320a16] border border-[#ff0055]/80 text-[#ff80a0] shadow-[0_0_10px_rgba(255,0,85,0.3)]"
+                      : "bg-[#061910] border border-[#00ff88]/50 text-[#7affb8]"
                   }`}
                 >
                   {item.risk}
                 </span>
               </div>
 
-              <h4 className="text-xs font-bold text-slate-200 mb-1">{item.title}</h4>
-              <p className="text-[11px] text-slate-400 leading-relaxed mb-3">{item.desc}</p>
+              <h4 className="text-sm font-bold text-white font-cinzel tracking-wide mb-1.5">
+                {item.title}
+              </h4>
+              <p className="text-[11px] text-[#a89f91] font-montserrat leading-relaxed mb-4">
+                {item.desc}
+              </p>
             </div>
 
             <div>
-              <div className="flex items-center justify-between text-xs mb-1">
-                <span className="text-slate-500 text-[10px]">ANOMALY INDEX</span>
-                <span className={`font-bold ${isHigh ? "text-red-400" : "text-cyan-300"}`}>
+              <div className="flex items-center justify-between text-xs font-mono mb-1.5">
+                <span className="text-[#80776d] text-[9px] tracking-wider uppercase">ANOMALY INDEX</span>
+                <span className={`font-bold ${isHigh ? "text-[#ff4d79]" : "text-[#f7e7c4]"}`}>
                   {item.value}%
                 </span>
               </div>
-              <div className="w-full bg-slate-900 rounded-full h-1.5 overflow-hidden border border-slate-800">
+              <div className="w-full bg-[#04060a] rounded-sm h-1.5 overflow-hidden border border-white/10 p-[0.5px]">
                 <div
-                  className={`h-full rounded-full ${
+                  className={`h-full rounded-sm ${
                     isHigh
-                      ? "bg-gradient-to-r from-amber-500 to-red-500"
-                      : "bg-gradient-to-r from-cyan-500 to-emerald-400"
+                      ? "bg-gradient-to-r from-amber-500 to-red-500 shadow-[0_0_8px_#ff0055]"
+                      : "bg-gradient-to-r from-[#d4af37] to-[#00f0ff] shadow-[0_0_8px_rgba(212,175,55,0.5)]"
                   }`}
                   style={{ width: `${item.value}%` }}
                 />
               </div>
             </div>
-          </div>
+          </motion.div>
         );
       })}
     </div>

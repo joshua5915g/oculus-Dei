@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { ShieldAlert, Cpu, Activity, Database, CheckCircle2, AlertTriangle } from "lucide-react";
+import { ShieldCheck, Cpu, Clock, Sparkles, Terminal, Activity } from "lucide-react";
 import { checkBackendHealth } from "@/lib/api";
 import { HealthResponse } from "@/lib/types";
 
@@ -15,18 +15,19 @@ export default function Header({ onLoadSample, isAnalyzing }: HeaderProps) {
   const [currentTime, setCurrentTime] = useState<string>("");
 
   useEffect(() => {
-    // Initial health check
     checkBackendHealth().then(setHealth);
     const interval = setInterval(() => {
       checkBackendHealth().then(setHealth);
-    }, 12000);
+    }, 10000);
     return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
     const updateClock = () => {
       const now = new Date();
-      setCurrentTime(now.toISOString().replace("T", " ").substring(0, 19) + " UTC");
+      setCurrentTime(
+        now.toISOString().replace("T", " ").substring(0, 19) + " UTC"
+      );
     };
     updateClock();
     const timer = setInterval(updateClock, 1000);
@@ -34,73 +35,95 @@ export default function Header({ onLoadSample, isAnalyzing }: HeaderProps) {
   }, []);
 
   return (
-    <header className="border-b border-cyan-500/20 bg-[#070b12]/90 backdrop-blur-md sticky top-0 z-50">
+    <header className="sticky top-0 z-50 w-full border-b border-[#d4af37]/20 bg-[#030508]/85 backdrop-blur-2xl shadow-[0_10px_35px_rgba(0,0,0,0.85)]">
+      {/* Top micro gold highlight line */}
+      <div className="top-glow-gold" />
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row items-center justify-between py-3 gap-3">
-          {/* Logo and Core Identity */}
-          <div className="flex items-center gap-3">
-            <div className="relative p-2.5 rounded-lg bg-cyan-950/40 border border-cyan-400/40 shadow-[0_0_15px_rgba(0,240,255,0.25)]">
-              <ShieldAlert className="w-6 h-6 text-cyan-400 animate-pulse" />
-              <div className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-cyan-400 rounded-full shadow-[0_0_8px_#00f0ff]" />
+        <div className="flex flex-col md:flex-row items-center justify-between py-3.5 gap-4">
+          
+          {/* Brand Identity & Eyebrow Badge */}
+          <div className="flex items-center gap-3.5 group cursor-pointer">
+            <div className="relative w-10 h-10 rounded-sm bg-gradient-to-br from-[#d4af37] via-[#f7e7c4] to-[#8c6d4f] p-[1px] shadow-[0_0_20px_rgba(212,175,55,0.35)] group-hover:shadow-[0_0_28px_rgba(212,175,55,0.6)] transition-all duration-300">
+              <div className="w-full h-full bg-[#07090e] rounded-[1px] flex items-center justify-center">
+                <ShieldCheck className="w-5 h-5 text-[#f7e7c4] group-hover:scale-110 transition-transform duration-300" />
+              </div>
+              <div className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-[#00ff88] shadow-[0_0_8px_#00ff88] animate-pulse" />
             </div>
-            <div>
+
+            <div className="flex flex-col">
               <div className="flex items-center gap-2">
-                <h1 className="text-xl font-bold tracking-wider text-white flex items-center gap-1.5 font-mono">
-                  OCULUS <span className="text-cyan-400">DEI</span>
+                <h1 className="text-xl sm:text-2xl font-bold tracking-[0.2em] uppercase text-white font-cinzel">
+                  OCULUS <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#f7e7c4] via-[#d4af37] to-[#c99e5d]">DEI</span>
                 </h1>
-                <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-cyan-950/80 border border-cyan-500/40 text-cyan-300 font-semibold">
-                  Forensic v1.0
+                <span className="hidden sm:inline-flex text-[9px] font-mono tracking-[0.2em] px-2 py-0.5 rounded-sm bg-[#d4af37]/10 border border-[#d4af37]/30 text-[#f7e7c4] uppercase font-medium">
+                  FORENSIC LAB
                 </span>
               </div>
-              <p className="text-xs text-slate-400 font-mono">
-                Harvard-Grade Synthetic Media & Deepfake Detection Lab
-              </p>
+              <div className="flex items-center gap-2 text-[10px] tracking-[0.18em] text-[#a89f91] uppercase">
+                <span>Defense-Grade Synthetic Media Intelligence</span>
+                <span className="text-[#d4af37]/60">•</span>
+                <span className="text-emerald-400/90 font-mono">MIL-STD 461F</span>
+              </div>
             </div>
           </div>
 
-          {/* HUD Live Status Badges */}
-          <div className="flex flex-wrap items-center gap-3 text-xs font-mono">
-            {/* Engine Status */}
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-slate-900/80 border border-slate-800">
-              <Cpu className="w-3.5 h-3.5 text-cyan-400" />
-              <span className="text-slate-400">ML BACKEND:</span>
+          {/* HUD Live Status Badges & Quick Specimens */}
+          <div className="flex flex-wrap items-center gap-3 text-xs">
+            
+            {/* Classification Badge */}
+            <div className="hidden xl:flex items-center gap-1.5 px-2.5 py-1 rounded-sm bg-[#120a07] border border-[#d4af37]/30 text-[10px] font-mono tracking-wider text-[#f7e7c4]">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#d4af37] animate-ping" />
+              <span>CLASSIFIED // SCI-RESTRICTED</span>
+            </div>
+
+            {/* ML Backend Status */}
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-sm bg-[#090d14]/90 border border-[#d4af37]/25 shadow-inner">
+              <Cpu className="w-3.5 h-3.5 text-[#d4af37]" />
+              <span className="text-[11px] font-mono text-[#a89f91] tracking-wider">NEURAL ENGINE:</span>
               {health?.model_loaded ? (
-                <span className="flex items-center gap-1 text-emerald-400 font-semibold">
-                  <CheckCircle2 className="w-3 h-3" /> ONLINE ({health.device.toUpperCase()})
+                <span className="flex items-center gap-1 text-[11px] font-mono font-semibold text-[#00ff88]">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#00ff88] shadow-[0_0_6px_#00ff88]" />
+                  ONLINE ({health.device.toUpperCase()})
                 </span>
               ) : (
-                <span className="flex items-center gap-1 text-amber-400 font-semibold">
-                  <AlertTriangle className="w-3 h-3 animate-spin" /> CONNECTING
+                <span className="flex items-center gap-1 text-[11px] font-mono font-semibold text-[#ffb800]">
+                  <Activity className="w-3 h-3 animate-spin text-[#ffb800]" />
+                  STANDBY
                 </span>
               )}
             </div>
 
             {/* Time Telemetry */}
-            <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-md bg-slate-900/80 border border-slate-800 text-slate-300">
-              <Activity className="w-3.5 h-3.5 text-cyan-400" />
+            <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-sm bg-[#090d14]/90 border border-white/10 text-[#a89f91] text-[11px] font-mono tracking-wider">
+              <Clock className="w-3.5 h-3.5 text-[#d4af37]" />
               <span>{currentTime || "INITIALIZING..."}</span>
             </div>
 
-            {/* Sample Demos */}
+            {/* Sample Specimens */}
             <div className="flex items-center gap-2">
               <button
+                type="button"
                 disabled={isAnalyzing}
                 onClick={() => onLoadSample("deepfake_video")}
-                className="px-2.5 py-1.5 text-xs font-mono rounded bg-red-950/40 hover:bg-red-900/60 border border-red-500/40 text-red-300 transition-all cursor-pointer disabled:opacity-50"
-                title="Load sample synthetic clip"
+                className="relative px-3 py-1.5 text-[11px] font-mono tracking-wider rounded-sm bg-[#22070f]/80 hover:bg-[#340b17] border border-[#ff0055]/40 hover:border-[#ff0055]/80 text-[#ff80a0] transition-all duration-200 cursor-pointer disabled:opacity-40 flex items-center gap-1.5 shadow-[0_0_12px_rgba(255,0,85,0.15)] group"
               >
-                + Sample Deepfake
+                <span className="w-1.5 h-1.5 rounded-full bg-[#ff0055] group-hover:scale-125 transition-transform shadow-[0_0_6px_#ff0055]" />
+                <span>+ Test Deepfake</span>
               </button>
               <button
+                type="button"
                 disabled={isAnalyzing}
                 onClick={() => onLoadSample("authentic_image")}
-                className="px-2.5 py-1.5 text-xs font-mono rounded bg-emerald-950/40 hover:bg-emerald-900/60 border border-emerald-500/40 text-emerald-300 transition-all cursor-pointer disabled:opacity-50"
-                title="Load sample verified media"
+                className="relative px-3 py-1.5 text-[11px] font-mono tracking-wider rounded-sm bg-[#051f14]/80 hover:bg-[#0a2f1f] border border-[#00ff88]/40 hover:border-[#00ff88]/80 text-[#80ffc0] transition-all duration-200 cursor-pointer disabled:opacity-40 flex items-center gap-1.5 shadow-[0_0_12px_rgba(0,255,136,0.15)] group"
               >
-                + Sample Authentic
+                <span className="w-1.5 h-1.5 rounded-full bg-[#00ff88] group-hover:scale-125 transition-transform shadow-[0_0_6px_#00ff88]" />
+                <span>+ Test Authentic</span>
               </button>
             </div>
+
           </div>
+
         </div>
       </div>
     </header>

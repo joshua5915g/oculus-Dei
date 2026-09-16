@@ -1,20 +1,13 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
-  title: "OCULUS DEI | Harvard-Grade Deepfake & Synthetic Media Detection Hub",
-  description: "Next-generation multi-modal deepfake forensic analysis pipeline featuring PyTorch XAI Grad-CAM attention heatmaps and cross-modal audio-visual synchronization telemetry.",
+  title: "OCULUS DEI — Defense-Grade Synthetic Media Forensic Intelligence",
+  description:
+    "Harvard-grade multi-modal deepfake forensic workstation featuring PyTorch XAI Grad-CAM spatial activation maps and cross-modal phoneme-viseme desynchronization telemetry.",
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({
@@ -23,8 +16,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} dark`}>
-      <body className="min-h-screen bg-[#05070b] text-slate-100 flex flex-col font-sans selection:bg-cyan-500 selection:text-black">
+    <html lang="en" className="dark scroll-smooth">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cinzel:wght@500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700&family=Montserrat:wght@200;300;400;500;600;700;800&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body className="min-h-screen bg-[#020305] text-[#e8dfd8] flex flex-col font-sans selection:bg-[#d4af37] selection:text-black antialiased overflow-x-hidden">
         {children}
       </body>
     </html>

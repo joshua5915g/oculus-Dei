@@ -2,38 +2,120 @@
 
 @layer base {
   :root {
-    --bg-void: #06080e;
-    --bg-card: rgba(12, 17, 29, 0.75);
-    --border-glow: rgba(0, 240, 255, 0.18);
-    --cyan-glow: #00f0ff;
+    --gold: #d4af37;
+    --gold-light: #f7e7c4;
+    --gold-dark: #8c6d4f;
+    --obsidian: #030407;
+    --sand: #e8dfd8;
+    --sand-muted: #a89f91;
+    --cyan-forensic: #00f0ff;
     --danger-crimson: #ff0055;
     --warning-amber: #ffb800;
     --success-emerald: #00ff88;
   }
 
+  html {
+    scroll-behavior: smooth;
+    background-color: #020305;
+    color: #e8dfd8;
+  }
+
   body {
-    background-color: var(--bg-void);
-    color: #e2e8f0;
-    min-height: 100vh;
-    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    margin: 0;
+    padding: 0;
     overflow-x: hidden;
+    background-color: #020305;
+    font-family: 'Montserrat', sans-serif;
+    color: #e8dfd8;
+  }
+
+  ::selection {
+    background-color: #d4af37;
+    color: #000000;
+  }
+
+  /* Custom obsidian glass scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #050302;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #2a2016;
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #d4af37;
   }
 }
 
-/* Futuristic Cybernetic Background Grid & Gradients */
-.cyber-grid {
-  background-size: 40px 40px;
-  background-image: 
-    linear-gradient(to right, rgba(0, 240, 255, 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(0, 240, 255, 0.04) 1px, transparent 1px);
+/* Font helpers */
+.font-cinzel {
+  font-family: 'Cinzel', serif;
 }
 
-.radar-sweep {
+.font-bebas {
+  font-family: 'Bebas Neue', sans-serif;
+}
+
+.font-montserrat {
+  font-family: 'Montserrat', sans-serif;
+}
+
+.font-mono-code {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Atmospheric Animations */
+@keyframes atmoGlow {
+  0%, 100% {
+    opacity: 0.18;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.32;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes pulseBorder {
+  0%, 100% {
+    border-color: rgba(212, 175, 55, 0.25);
+  }
+  50% {
+    border-color: rgba(212, 175, 55, 0.7);
+  }
+}
+
+@keyframes radarSweepHorizontal {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+.animate-atmo-glow {
+  animation: atmoGlow 8s ease-in-out infinite;
+}
+
+.animate-pulse-border {
+  animation: pulseBorder 3s ease-in-out infinite;
+}
+
+/* Radar Sweep Effect */
+.radar-sweep-bar {
   position: relative;
   overflow: hidden;
 }
 
-.radar-sweep::after {
+.radar-sweep-bar::after {
   content: "";
   position: absolute;
   top: 0;
@@ -43,70 +125,177 @@
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(0, 240, 255, 0.08) 50%,
+    rgba(212, 175, 55, 0.08) 40%,
+    rgba(0, 240, 255, 0.15) 50%,
+    rgba(212, 175, 55, 0.08) 60%,
     transparent 100%
   );
-  animation: sweep 2.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  animation: radarSweepHorizontal 3.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  pointer-events: none;
 }
 
-@keyframes sweep {
-  0% {
-    left: -100%;
-  }
-  100% {
-    left: 100%;
-  }
+/* Obsidian Glass Panels */
+.obsidian-card {
+  position: relative;
+  background: rgba(8, 11, 16, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(212, 175, 55, 0.18);
+  box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.85),
+              inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.cyber-panel {
-  background: rgba(10, 15, 26, 0.65);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(0, 240, 255, 0.12);
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.8),
-              inset 0 1px 0 rgba(255, 255, 255, 0.08);
+.obsidian-card:hover {
+  border-color: rgba(212, 175, 55, 0.45);
+  box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.95),
+              0 0 30px -5px rgba(212, 175, 55, 0.12),
+              inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
-.cyber-panel-danger {
-  background: rgba(26, 8, 16, 0.65);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 0, 85, 0.25);
-  box-shadow: 0 10px 30px -10px rgba(255, 0, 85, 0.15),
-              inset 0 1px 0 rgba(255, 0, 85, 0.1);
+/* Top Glow Divider Line */
+.top-glow-gold {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(212, 175, 55, 0.6) 50%, transparent 100%);
+  pointer-events: none;
 }
 
-.cyber-panel-success {
-  background: rgba(8, 26, 18, 0.65);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(0, 255, 136, 0.25);
-  box-shadow: 0 10px 30px -10px rgba(0, 255, 136, 0.15),
-              inset 0 1px 0 rgba(0, 255, 136, 0.1);
+.top-glow-cyan {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(0, 240, 255, 0.6) 50%, transparent 100%);
+  pointer-events: none;
 }
 
-.glow-text-cyan {
-  text-shadow: 0 0 12px rgba(0, 240, 255, 0.6), 0 0 24px rgba(0, 240, 255, 0.3);
+.top-glow-danger {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 0, 85, 0.7) 50%, transparent 100%);
+  pointer-events: none;
 }
 
-.glow-text-danger {
-  text-shadow: 0 0 12px rgba(255, 0, 85, 0.6), 0 0 24px rgba(255, 0, 85, 0.3);
+.top-glow-success {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(0, 255, 136, 0.7) 50%, transparent 100%);
+  pointer-events: none;
 }
 
-.glow-text-success {
-  text-shadow: 0 0 12px rgba(0, 255, 136, 0.6), 0 0 24px rgba(0, 255, 136, 0.3);
+/* Tactical HUD Corner Pins */
+.corner-pin-tl {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  border-top: 1.5px solid rgba(212, 175, 55, 0.7);
+  border-left: 1.5px solid rgba(212, 175, 55, 0.7);
+  pointer-events: none;
 }
 
-/* Custom Scanlines */
-.scanlines {
+.corner-pin-br {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 8px;
+  height: 8px;
+  border-bottom: 1.5px solid rgba(212, 175, 55, 0.7);
+  border-right: 1.5px solid rgba(212, 175, 55, 0.7);
+  pointer-events: none;
+}
+
+.corner-pin-tr {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 8px;
+  height: 8px;
+  border-top: 1.5px solid rgba(212, 175, 55, 0.7);
+  border-right: 1.5px solid rgba(212, 175, 55, 0.7);
+  pointer-events: none;
+}
+
+.corner-pin-bl {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  border-bottom: 1.5px solid rgba(212, 175, 55, 0.7);
+  border-left: 1.5px solid rgba(212, 175, 55, 0.7);
+  pointer-events: none;
+}
+
+/* Subtle Tactical Grid */
+.tactical-grid {
+  background-size: 48px 48px;
+  background-image: 
+    linear-gradient(to right, rgba(212, 175, 55, 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(212, 175, 55, 0.035) 1px, transparent 1px);
+}
+
+/* Scanline Overlay */
+.scanlines-subtle {
   background: linear-gradient(
     rgba(18, 16, 16, 0) 50%, 
-    rgba(0, 0, 0, 0.25) 50%
+    rgba(0, 0, 0, 0.35) 50%
   ), linear-gradient(
     90deg,
-    rgba(255, 0, 0, 0.03),
-    rgba(0, 255, 0, 0.01),
-    rgba(0, 0, 255, 0.03)
+    rgba(212, 175, 55, 0.02),
+    rgba(0, 240, 255, 0.02),
+    rgba(212, 175, 55, 0.02)
   );
-  background-size: 100% 3px, 6px 100%;
+  background-size: 100% 4px, 8px 100%;
+}
+
+/* Range input customization for Grad-CAM opacity */
+input[type=range].slider-luxury {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  background: #181d26;
+  border-radius: 3px;
+  outline: none;
+  border: 1px solid rgba(212, 175, 55, 0.25);
+}
+
+input[type=range].slider-luxury::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 2px;
+  background: linear-gradient(135deg, #f7e7c4, #d4af37);
+  cursor: pointer;
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.75), 0 0 2px #000;
+  border: 1px solid #ffffff;
+  transition: transform 0.15s ease;
+}
+
+input[type=range].slider-luxury::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+input[type=range].slider-luxury::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 2px;
+  background: linear-gradient(135deg, #f7e7c4, #d4af37);
+  cursor: pointer;
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.75), 0 0 2px #000;
+  border: 1px solid #ffffff;
 }
