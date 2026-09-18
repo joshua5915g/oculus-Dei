@@ -90,8 +90,46 @@ export async function POST(request: NextRequest) {
       </svg>
     `;
 
+    const fftSpectrogramSvg = `
+      <svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="fftCore" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="15%" stop-color="#ffb800"/>
+            <stop offset="40%" stop-color="#ff0055"/>
+            <stop offset="70%" stop-color="#3d0066"/>
+            <stop offset="100%" stop-color="#050010"/>
+          </radialGradient>
+        </defs>
+        <rect width="100%" height="100%" fill="#04020a"/>
+        <circle cx="256" cy="256" r="240" fill="url(#fftCore)"/>
+        <!-- Frequency Rings -->
+        <circle cx="256" cy="256" r="75" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1" stroke-dasharray="3,3"/>
+        <circle cx="256" cy="256" r="150" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1" stroke-dasharray="3,3"/>
+        <circle cx="256" cy="256" r="225" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1" stroke-dasharray="3,3"/>
+        <!-- Center Crosshair -->
+        <line x1="236" y1="256" x2="276" y2="256" stroke="#ffffff" stroke-width="1.5"/>
+        <line x1="256" y1="236" x2="256" y2="276" stroke="#ffffff" stroke-width="1.5"/>
+        ${
+          isSynthetic
+            ? `<!-- High-frequency GAN lattice harmonics -->
+               <rect x="95" y="95" width="30" height="30" fill="none" stroke="#ff0055" stroke-width="2"/>
+               <circle cx="110" cy="110" r="5" fill="#ff0055"/>
+               <rect x="385" y="95" width="30" height="30" fill="none" stroke="#ff0055" stroke-width="2"/>
+               <circle cx="400" cy="110" r="5" fill="#ff0055"/>
+               <rect x="95" y="385" width="30" height="30" fill="none" stroke="#ff0055" stroke-width="2"/>
+               <circle cx="110" cy="400" r="5" fill="#ff0055"/>
+               <rect x="385" y="385" width="30" height="30" fill="none" stroke="#ff0055" stroke-width="2"/>
+               <circle cx="400" cy="400" r="5" fill="#ff0055"/>
+               <text x="20" y="490" fill="#ff0055" font-family="monospace" font-size="11" font-weight="bold">ALERT: HIGH-FREQUENCY CHECKERBOARD GRID ANOMALY</text>`
+            : `<text x="20" y="490" fill="#00ff88" font-family="monospace" font-size="11">NOMINAL 1/f NATURAL SCENE FREQUENCY DECAY</text>`
+        }
+      </svg>
+    `;
+
     const originalBase64 = `data:image/svg+xml;base64,${Buffer.from(originalSvg).toString("base64")}`;
     const heatmapBase64 = `data:image/svg+xml;base64,${Buffer.from(heatmapSvg).toString("base64")}`;
+    const fftSpectrogramBase64 = `data:image/svg+xml;base64,${Buffer.from(fftSpectrogramSvg).toString("base64")}`;
 
     const detectedArtifacts: ArtifactAnnotation[] = isSynthetic
       ? [
@@ -162,6 +200,7 @@ export async function POST(request: NextRequest) {
         original_frame_base64: originalBase64,
         heatmap_base64: heatmapBase64,
         composite_overlay_base64: originalBase64,
+        fft_spectrogram_base64: fftSpectrogramBase64,
         detected_artifacts: detectedArtifacts,
       },
       forensic_breakdown: {

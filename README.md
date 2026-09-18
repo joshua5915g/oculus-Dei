@@ -1,6 +1,6 @@
 # Oculus Dei — Deepfake & Synthetic Media Forensic Hub
 
-A Defense-grade, Harvard-level Deepfake and Synthetic Media Detection platform built with **Next.js 15**, **React 19**, **Tailwind CSS**, **Recharts**, and a **FastAPI** backend with simulated **PyTorch** inference and **OpenCV** Explainable AI (XAI) Grad-CAM visualizer.
+A Defense-grade Deepfake and Synthetic Media Detection platform built with **Next.js 15**, **React 19**, **Tailwind CSS**, **Recharts**, and a **FastAPI** backend with simulated **PyTorch** inference and **OpenCV** Explainable AI (XAI) Grad-CAM visualizer.
 
 ---
 
@@ -10,9 +10,10 @@ A Defense-grade, Harvard-level Deepfake and Synthetic Media Detection platform b
    - Drag-and-drop support for `.mp4`, `.jpg`, `.jpeg`, `.png`, and `.webp` with size validation (up to 100MB) and instant preview.
    - Built-in one-click synthetic deepfake and authentic reference samples for instantaneous testing.
 
-2. **Explainable AI (XAI) Grad-CAM Visualizer:**
-   - Returns base64 Data URIs of the original frame, isolated Grad-CAM activation heatmap, and composite blend.
-   - Real-time interactive opacity slider (0% to 100% blend) allowing forensic investigators to smoothly inspect spatial anomalies.
+2. **Explainable AI (XAI) Grad-CAM & 2D FFT Spectrogram Visualizer:**
+   - **Interactive Split Comparison Slider**: Smooth curtain wipe slider allowing forensic analysts to compare raw unaltered evidence against neural Grad-CAM overlays in real time.
+   - **2D FFT Frequency Power Spectrogram**: Fast Fourier Transform power density spectrum analyzer detecting periodic high-frequency checkerboard anomalies characteristic of GANs and diffusion upsampling.
+   - Real-time interactive opacity slider (0% to 100% blend), standalone heatmaps, and raw frame inspection modes.
    - Interactive bounding box annotations and severity markers for facial warping, corneal specularity mismatch, and GAN frequency artifacts.
 
 3. **Cross-Modal Audio-Visual Synchronization Analysis:**
@@ -21,7 +22,8 @@ A Defense-grade, Harvard-level Deepfake and Synthetic Media Detection platform b
 
 4. **Forensic Telemetry & Auditing:**
    - 4-quadrant granular breakdown: Facial Boundary Warping, 2D FFT Frequency Checkerboard, Corneal Specular Disparity, and Compression Discontinuities.
-   - Exportable cryptographic forensic audit dossier (JSON) with SHA-256 audit stamps.
+   - **Court-Ready PDF Dossier Export**: Generate official, court-admissible forensic intelligence dossiers formatted with cryptographic SHA-256 seals, ISO/IEC 27037 digital evidence standards, optical/acoustic telemetry matrices, embedded keyframe thumbnails, and examiner sign-off certification.
+   - Exportable machine-readable JSON forensic audit record with SHA-256 audit stamps.
 
 ---
 

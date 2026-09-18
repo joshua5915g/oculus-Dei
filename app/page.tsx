@@ -105,7 +105,7 @@ export default function Home() {
 
       ctx.fillStyle = "#a89f91";
       ctx.font = "16px 'JetBrains Mono', monospace";
-      ctx.fillText("HARVARD FORENSIC BENCHMARK TEST SPECIMEN // OCULUS DEI", 360, 155);
+      ctx.fillText("FORENSIC BENCHMARK TEST SPECIMEN // OCULUS DEI", 360, 155);
     }
 
     const dataUrl = canvas.toDataURL("image/jpeg", 0.9);

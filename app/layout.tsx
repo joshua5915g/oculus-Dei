@@ -4,7 +4,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "OCULUS DEI — Defense-Grade Synthetic Media Forensic Intelligence",
   description:
-    "Harvard-grade multi-modal deepfake forensic workstation featuring PyTorch XAI Grad-CAM spatial activation maps and cross-modal phoneme-viseme desynchronization telemetry.",
+    "Defense-grade multi-modal deepfake forensic workstation featuring PyTorch XAI Grad-CAM spatial activation maps and cross-modal phoneme-viseme desynchronization telemetry.",
   icons: {
     icon: "/favicon.ico",
   },

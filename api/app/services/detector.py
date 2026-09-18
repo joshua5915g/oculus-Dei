@@ -27,7 +27,7 @@ from app.services.xai_visualizer import XAIVisualizer
 
 class MultiSpectralForensicDetector:
     """
-    Harvard-Grade Deepfake & AI Media Detection Engine.
+    Defense-Grade Deepfake & AI Media Detection Engine.
     Combines:
       1. C2PA / JUMBF / Google Gemini SynthID Provenance Scanner
       2. Dual Vision Transformer (ViT) Neural Ensemble (capcheck + umm-maybe)
@@ -166,9 +166,12 @@ class MultiSpectralForensicDetector:
             verdict = "AUTHENTIC"
             prediction_label = "Authentic Camera Capture Verified"
 
-        # Generate Grad-CAM heatmaps
+        # Generate Grad-CAM heatmaps & 2D FFT Spectrogram
         colored_heatmap, composite_overlay = XAIVisualizer.create_synthetic_gradcam(
             frame_bgr, fake_probability=fake_prob
+        )
+        _, fft_spectrogram_b64 = XAIVisualizer.generate_2d_fft_spectrogram(
+            frame_bgr, is_synthetic=is_synthetic
         )
 
         original_b64 = XAIVisualizer.encode_bgr_to_base64_uri(frame_bgr, format_type="jpeg")
@@ -243,6 +246,7 @@ class MultiSpectralForensicDetector:
                 original_frame_base64=original_b64,
                 heatmap_base64=heatmap_b64,
                 composite_overlay_base64=composite_b64,
+                fft_spectrogram_base64=fft_spectrogram_b64,
                 detected_artifacts=artifacts
             ),
             forensic_breakdown=breakdown,

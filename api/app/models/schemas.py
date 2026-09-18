@@ -11,6 +11,7 @@ class XAIOutput(BaseModel):
     original_frame_base64: str = Field(..., description="Data URI base64 of the analyzed original frame/image")
     heatmap_base64: str = Field(..., description="Data URI base64 of the standalone Grad-CAM pseudo-color heatmap")
     composite_overlay_base64: str = Field(..., description="Data URI base64 of the blended Grad-CAM overlay")
+    fft_spectrogram_base64: Optional[str] = Field(None, description="Data URI base64 of the 2D FFT power spectrogram")
     detected_artifacts: List[ArtifactAnnotation] = Field(default_factory=list, description="List of localized forensic anomalies")
 
 class ForensicBreakdown(BaseModel):

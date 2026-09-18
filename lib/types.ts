@@ -11,6 +11,7 @@ export interface XAIOutput {
   original_frame_base64: string;
   heatmap_base64: string;
   composite_overlay_base64: string;
+  fft_spectrogram_base64?: string;
   detected_artifacts: ArtifactAnnotation[];
 }
 

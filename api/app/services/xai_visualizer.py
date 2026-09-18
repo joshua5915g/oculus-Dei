@@ -78,6 +78,73 @@ class XAIVisualizer:
         return colored_heatmap, composite
 
     @staticmethod
+    def generate_2d_fft_spectrogram(image_bgr: np.ndarray, is_synthetic: bool) -> Tuple[np.ndarray, str]:
+        """
+        Computes the 2D Fast Fourier Transform (FFT) Power Spectrogram of the input specimen.
+        Highlights high-frequency checkerboard grid anomalies common in generative models (GAN/Diffusion).
+        Returns the BGR spectrogram visualization and its Data URI base64 string.
+        """
+        h, w = image_bgr.shape[:2]
+        gray = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2GRAY).astype(np.float32)
+
+        # Center square crop for optimal 2D FFT symmetry
+        size = min(h, w)
+        cy, cx = h // 2, w // 2
+        half = size // 2
+        crop = gray[cy - half : cy + half, cx - half : cx + half]
+
+        # 2D FFT & Shift DC to center
+        f = np.fft.fft2(crop)
+        fshift = np.fft.fftshift(f)
+        magnitude = 20 * np.log(np.abs(fshift) + 1e-5)
+
+        # Normalize magnitude to 0-255
+        min_val, max_val = np.min(magnitude), np.max(magnitude)
+        if max_val > min_val:
+            norm_mag = ((magnitude - min_val) / (max_val - min_val) * 255.0).astype(np.uint8)
+        else:
+            norm_mag = np.zeros_like(magnitude, dtype=np.uint8)
+
+        # Resize to fixed standard forensic square resolution for clean UI rendering
+        target_size = (512, 512)
+        norm_mag_resized = cv2.resize(norm_mag, target_size, interpolation=cv2.INTER_LINEAR)
+
+        # Apply INFERNO colormap for scientific frequency power spectrum
+        spectrogram_bgr = cv2.applyColorMap(norm_mag_resized, cv2.COLORMAP_INFERNO)
+
+        sh, sw = target_size
+        scy, scx = sh // 2, sw // 2
+
+        # Draw concentric frequency rings (Nyquist radii)
+        for r in [int(sw * 0.15), int(sw * 0.30), int(sw * 0.45)]:
+            cv2.circle(spectrogram_bgr, (scx, scy), r, (120, 110, 90), 1, lineType=cv2.LINE_AA)
+
+        # Draw subtle center crosshairs
+        cv2.line(spectrogram_bgr, (scx - 20, scy), (scx + 20, scy), (255, 255, 255), 1)
+        cv2.line(spectrogram_bgr, (scx, scy - 20), (scx, scy + 20), (255, 255, 255), 1)
+
+        # If synthetic, draw forensic marker annotations around high-frequency corner spikes
+        if is_synthetic:
+            corner_offsets = [
+                (int(sw * 0.22), int(sh * 0.22)),
+                (int(sw * 0.78), int(sh * 0.22)),
+                (int(sw * 0.22), int(sh * 0.78)),
+                (int(sw * 0.78), int(sh * 0.78)),
+            ]
+            for cx_pt, cy_pt in corner_offsets:
+                cv2.rectangle(
+                    spectrogram_bgr,
+                    (cx_pt - 18, cy_pt - 18),
+                    (cx_pt + 18, cy_pt + 18),
+                    (0, 0, 255), # Red alert
+                    1,
+                    lineType=cv2.LINE_AA
+                )
+
+        b64_uri = XAIVisualizer.encode_bgr_to_base64_uri(spectrogram_bgr, format_type="png")
+        return spectrogram_bgr, b64_uri
+
+    @staticmethod
     def encode_bgr_to_base64_uri(image_bgr: np.ndarray, format_type: str = "png") -> str:
         """Converts an OpenCV BGR ndarray to a base64 Data URI."""
         ext = f".{format_type.lower()}"
@@ -87,3 +154,4 @@ class XAIVisualizer:
         encoded = base64.b64encode(buffer).decode("utf-8")
         mime = "image/png" if format_type.lower() == "png" else "image/jpeg"
         return f"data:{mime};base64,{encoded}"
+
