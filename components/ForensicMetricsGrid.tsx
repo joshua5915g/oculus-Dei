@@ -42,7 +42,7 @@ export default function ForensicMetricsGrid({ breakdown }: ForensicMetricsGridPr
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div id="tour-forensic-metrics" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       {metrics.map((item, idx) => {
         const Icon = item.icon;
         const isHigh = item.value >= 70;

@@ -83,7 +83,7 @@ export default function Dropzone({
   const isVideo = selectedFile?.type.includes("video") || selectedFile?.name.endsWith(".mp4");
 
   return (
-    <div className="w-full">
+    <div id="tour-dropzone" className="w-full">
       <input
         ref={fileInputRef}
         type="file"

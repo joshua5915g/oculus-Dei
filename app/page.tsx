@@ -9,6 +9,7 @@ import XAIViewer from "@/components/XAIViewer";
 import AudioVisualSyncChart from "@/components/AudioVisualSyncChart";
 import ForensicMetricsGrid from "@/components/ForensicMetricsGrid";
 import ExportReportModal from "@/components/ExportReportModal";
+import SystemTourGuide from "@/components/SystemTourGuide";
 import { analyzeMedia } from "@/lib/api";
 import { DetectionResponse } from "@/lib/types";
 import { motion, AnimatePresence } from "framer-motion";
@@ -22,6 +23,9 @@ import {
   Fingerprint,
   ShieldCheck,
   Zap,
+  Compass,
+  Play,
+  HelpCircle,
 } from "lucide-react";
 
 export default function Home() {
@@ -30,6 +34,8 @@ export default function Home() {
   const [analysisResult, setAnalysisResult] = useState<DetectionResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isReportModalOpen, setIsReportModalOpen] = useState<boolean>(false);
+  const [isTourActive, setIsTourActive] = useState<boolean>(false);
+  const [isGuideModalOpen, setIsGuideModalOpen] = useState<boolean>(false);
 
   // Mouse flashlight tracking
   const [cursorPos, setCursorPos] = useState<{ x: number; y: number }>({ x: -200, y: -200 });
@@ -123,11 +129,27 @@ export default function Home() {
     return new File([ab], filename, { type: mimeType });
   };
 
-  const handleLoadSample = (sampleType: "deepfake_video" | "authentic_image") => {
+  const handleLoadSample = async (
+    sampleType: "deepfake_video" | "authentic_image",
+    autoRun: boolean = false
+  ) => {
     setError(null);
     const sample = createSampleFile(sampleType);
     setSelectedFile(sample);
     setAnalysisResult(null);
+
+    if (autoRun) {
+      setIsAnalyzing(true);
+      try {
+        const response = await analyzeMedia(sample);
+        setAnalysisResult(response);
+      } catch (err: any) {
+        console.error("Forensic analysis error:", err);
+        setError(err?.message || "Failed to complete forensic inference pipeline");
+      } finally {
+        setIsAnalyzing(false);
+      }
+    }
   };
 
   const handleStartAnalysis = async () => {
@@ -172,7 +194,12 @@ export default function Home() {
       <div className="absolute bottom-1/3 right-1/4 w-[32rem] h-[32rem] bg-[#8c6d4f]/5 rounded-full blur-[170px] pointer-events-none" />
 
       {/* 3. Top HUD Navigation */}
-      <Header onLoadSample={handleLoadSample} isAnalyzing={isAnalyzing} />
+      <Header
+        onLoadSample={(type) => handleLoadSample(type, false)}
+        isAnalyzing={isAnalyzing}
+        onOpenTour={() => setIsTourActive(true)}
+        onOpenGuideModal={() => setIsGuideModalOpen(true)}
+      />
 
       {/* 4. Main Forensic Workspace */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-9 relative z-10">
@@ -200,7 +227,7 @@ export default function Home() {
             </div>
 
             <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
-              <div className="space-y-3 max-w-3xl">
+              <div className="space-y-4 max-w-3xl">
                 <h2 className="text-3xl sm:text-4xl md:text-5xl tracking-tight uppercase font-cinzel text-white leading-tight">
                   <span className="block text-transparent bg-clip-text bg-gradient-to-r from-white via-[#f7e7c4] to-[#c99e5d]">
                     DEFENSE-GRADE MULTI-MODAL
@@ -212,6 +239,36 @@ export default function Home() {
                 <p className="text-sm sm:text-base font-light text-[#a89f91] font-montserrat leading-relaxed">
                   Advanced forensic workstation isolating spatial gradient facial boundaries, 2D FFT spectral checkerboard anomalies, and cross-modal phoneme-viseme desynchronization in real time.
                 </p>
+
+                {/* Quick Interactive Tour & Demo Actions */}
+                <div className="flex flex-wrap items-center gap-3 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsTourActive(true)}
+                    className="flex items-center gap-2 px-4 py-2 rounded-sm bg-gradient-to-r from-[#d4af37] to-[#c99e5d] text-black font-mono text-xs font-bold tracking-wider uppercase hover:brightness-110 cursor-pointer shadow-[0_0_15px_rgba(212,175,55,0.35)] transition-all"
+                  >
+                    <Compass className="w-4 h-4" />
+                    <span>🎯 Start Guided Tour</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => handleLoadSample("deepfake_video", true)}
+                    className="flex items-center gap-2 px-4 py-2 rounded-sm bg-[#18090f] hover:bg-[#280e18] border border-[#ff0055]/50 text-[#ff80a0] font-mono text-xs tracking-wider uppercase cursor-pointer transition-all shadow-[0_0_12px_rgba(255,0,85,0.2)]"
+                  >
+                    <Play className="w-3.5 h-3.5 fill-current" />
+                    <span>⚡ Instant Demo Case</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setIsGuideModalOpen(true)}
+                    className="flex items-center gap-1.5 px-3 py-2 rounded-sm bg-white/5 hover:bg-white/10 border border-white/10 text-[#e8dfd8] font-mono text-xs tracking-wider uppercase cursor-pointer transition-all"
+                  >
+                    <HelpCircle className="w-3.5 h-3.5 text-[#d4af37]" />
+                    <span>Platform Overview</span>
+                  </button>
+                </div>
               </div>
 
               {/* Forensic Capability Highlights */}
@@ -305,9 +362,9 @@ export default function Home() {
               <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
                 <button
                   type="button"
+                  id="tour-export-dossier"
                   onClick={() => setIsReportModalOpen(true)}
                   className="flex items-center gap-2 px-4 py-2 rounded-sm bg-[#06080e] hover:bg-[#0c101a] border border-[#d4af37]/30 text-[#f7e7c4] font-mono text-xs tracking-wider uppercase cursor-pointer transition-all hover:border-[#d4af37]/70 shadow-sm"
-                  id="btn-export-dossier"
                 >
                   <FileSpreadsheet className="w-4 h-4 text-[#d4af37]" />
                   <span>EXPORT AUDIT DOSSIER</span>
@@ -353,6 +410,21 @@ export default function Home() {
         />
       )}
 
+      {/* System Tour Guide & Capabilities Matrix Modal */}
+      <SystemTourGuide
+        isTourActive={isTourActive}
+        onCloseTour={() => setIsTourActive(false)}
+        onOpenTour={() => setIsTourActive(true)}
+        isModalOpen={isGuideModalOpen}
+        onCloseModal={() => setIsGuideModalOpen(false)}
+        onOpenModal={() => {
+          setIsTourActive(false);
+          setIsGuideModalOpen(true);
+        }}
+        onLoadDemo={(type) => handleLoadSample(type, true)}
+        hasResults={!!analysisResult}
+      />
+
       {/* Cinematic Luxury Footer */}
       <footer className="border-t border-[#d4af37]/20 bg-[#020306] py-8 mt-16 font-mono text-xs text-[#a89f91] relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -362,6 +434,14 @@ export default function Home() {
             <span className="text-[#7e766c] text-[11px] tracking-wider">Defense-Grade Synthetic Media Forensic Intelligence</span>
           </div>
           <div className="flex items-center gap-4 text-[#5e574d] text-[11px] tracking-wider">
+            <button
+              type="button"
+              onClick={() => setIsGuideModalOpen(true)}
+              className="text-[#a89f91] hover:text-[#d4af37] transition-colors cursor-pointer"
+            >
+              SYSTEM BRIEFING GUIDE
+            </button>
+            <span>•</span>
             <span>ISO/IEC 27037 FORENSIC STANDARD</span>
             <span>•</span>
             <span className="text-[#d4af37]/80">PYTORCH GRAD-CAM v1.0</span>

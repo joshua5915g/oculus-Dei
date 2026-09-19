@@ -75,7 +75,7 @@ export default function XAIViewer({ xai, dimensions, filename }: XAIViewerProps)
   };
 
   return (
-    <div className="obsidian-card rounded-sm p-6 relative">
+    <div id="tour-xai-viewer" className="obsidian-card rounded-sm p-6 relative">
       <div className="corner-pin-tl" />
       <div className="corner-pin-tr" />
       <div className="corner-pin-bl" />

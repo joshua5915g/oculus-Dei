@@ -8,9 +8,16 @@ import { HealthResponse } from "@/lib/types";
 interface HeaderProps {
   onLoadSample: (sampleType: "deepfake_video" | "authentic_image") => void;
   isAnalyzing: boolean;
+  onOpenTour?: () => void;
+  onOpenGuideModal?: () => void;
 }
 
-export default function Header({ onLoadSample, isAnalyzing }: HeaderProps) {
+export default function Header({
+  onLoadSample,
+  isAnalyzing,
+  onOpenTour,
+  onOpenGuideModal,
+}: HeaderProps) {
   const [health, setHealth] = useState<HealthResponse | null>(null);
   const [currentTime, setCurrentTime] = useState<string>("");
 
@@ -78,7 +85,10 @@ export default function Header({ onLoadSample, isAnalyzing }: HeaderProps) {
             </div>
 
             {/* ML Backend Status */}
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-sm bg-[#090d14]/90 border border-[#d4af37]/25 shadow-inner">
+            <div
+              id="tour-header"
+              className="flex items-center gap-2 px-3 py-1.5 rounded-sm bg-[#090d14]/90 border border-[#d4af37]/25 shadow-inner"
+            >
               <Cpu className="w-3.5 h-3.5 text-[#d4af37]" />
               <span className="text-[11px] font-mono text-[#a89f91] tracking-wider">NEURAL ENGINE:</span>
               {health?.model_loaded ? (
@@ -100,8 +110,21 @@ export default function Header({ onLoadSample, isAnalyzing }: HeaderProps) {
               <span>{currentTime || "INITIALIZING..."}</span>
             </div>
 
+            {/* Tour & Guide Launcher Button */}
+            {onOpenGuideModal && (
+              <button
+                type="button"
+                onClick={onOpenGuideModal}
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-sm bg-[#0d121c] hover:bg-[#151c2c] border border-[#00f0ff]/40 hover:border-[#00f0ff] text-[#00f0ff] font-mono text-[11px] tracking-wider uppercase cursor-pointer transition-all shadow-[0_0_10px_rgba(0,240,255,0.15)] group"
+                title="Open System Capabilities Guide & Briefing"
+              >
+                <Sparkles className="w-3.5 h-3.5 group-hover:rotate-12 transition-transform" />
+                <span>Guide / Tour</span>
+              </button>
+            )}
+
             {/* Sample Specimens */}
-            <div className="flex items-center gap-2">
+            <div id="tour-sample-buttons" className="flex items-center gap-2">
               <button
                 type="button"
                 disabled={isAnalyzing}

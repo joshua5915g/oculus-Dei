@@ -67,7 +67,7 @@ export default function AudioVisualSyncChart({ analysis }: AudioVisualSyncChartP
   };
 
   return (
-    <div className="obsidian-card rounded-sm p-6 relative">
+    <div id="tour-av-sync" className="obsidian-card rounded-sm p-6 relative">
       <div className="corner-pin-tl" />
       <div className="corner-pin-tr" />
       <div className="corner-pin-bl" />
