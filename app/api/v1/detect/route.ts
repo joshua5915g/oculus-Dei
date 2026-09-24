@@ -219,6 +219,54 @@ export async function POST(request: NextRequest) {
           : "Acoustic phonemes and facial landmarks demonstrate physiological synchronization within nominal biological limits.",
         timeline,
       },
+      rppg: {
+        status: isSynthetic ? "BIOLOGICAL_PULSE_ABSENT" : "BIOMETRIC_PULSE_DETECTED",
+        heart_rate_bpm: isSynthetic ? 0 : 72.4,
+        pulse_consistency_index: isSynthetic ? 0.08 : 0.94,
+        biological_liveliness_score: isSynthetic ? 0.06 : 0.96,
+        snr_db: isSynthetic ? -2.4 : 17.8,
+        summary: isSynthetic
+          ? "Absence of authentic micro-capillary hemoglobin pulse. Spatial perfusion desynchronized across malar and frontal regions."
+          : "Physiological blood volume pulse (BVP) verified across facial vascular regions. Stable 72.4 BPM with high spatial perfusion coherence.",
+        bvp_waveform: Array.from({ length: 60 }, (_, i) => {
+          const t = i * (4.0 / 60);
+          const amp = isSynthetic
+            ? 0.5 + (Math.random() - 0.5) * 0.08
+            : (Math.sin(2 * Math.PI * 1.2 * t) + 0.35 * Math.sin(4 * Math.PI * 1.2 * t + 0.6) + 1.2) / 2.5;
+          return {
+            time_sec: Math.round(t * 100) / 100,
+            bvp_amplitude: Math.round(Math.max(0, Math.min(1, amp)) * 1000) / 1000,
+            synthetic_noise: isSynthetic ? 0.12 : 0.02,
+            systolic_peak: !isSynthetic && i % 25 === 0,
+          };
+        }),
+        spatial_perfusion: [
+          {
+            name: "Forehead",
+            perfusion_score: isSynthetic ? 0.12 : 0.92,
+            snr_db: isSynthetic ? -1.8 : 17.2,
+            status: isSynthetic ? "CHAOTIC_VOID" : "NOMINAL",
+          },
+          {
+            name: "Left Cheek (Malar)",
+            perfusion_score: isSynthetic ? 0.07 : 0.95,
+            snr_db: isSynthetic ? -3.1 : 18.6,
+            status: isSynthetic ? "DESYNCHRONIZED" : "NOMINAL",
+          },
+          {
+            name: "Right Cheek (Malar)",
+            perfusion_score: isSynthetic ? 0.09 : 0.94,
+            snr_db: isSynthetic ? -2.8 : 18.1,
+            status: isSynthetic ? "DESYNCHRONIZED" : "NOMINAL",
+          },
+          {
+            name: "Nasal/Perioral",
+            perfusion_score: isSynthetic ? 0.16 : 0.88,
+            snr_db: isSynthetic ? -0.9 : 15.4,
+            status: isSynthetic ? "CHAOTIC_VOID" : "NOMINAL",
+          },
+        ],
+      },
     };
 
     return NextResponse.json(response);

@@ -8,6 +8,7 @@ import ForensicScoreGauge from "@/components/ForensicScoreGauge";
 import XAIViewer from "@/components/XAIViewer";
 import AudioVisualSyncChart from "@/components/AudioVisualSyncChart";
 import ForensicMetricsGrid from "@/components/ForensicMetricsGrid";
+import RPPGVisualizer from "@/components/RPPGVisualizer";
 import ExportReportModal from "@/components/ExportReportModal";
 import SystemTourGuide from "@/components/SystemTourGuide";
 import { analyzeMedia } from "@/lib/api";
@@ -397,6 +398,11 @@ export default function Home() {
 
             {/* Cross-Modal Audio-Visual Sync Analysis Dashboard */}
             <AudioVisualSyncChart analysis={analysisResult.audio_visual_sync} />
+
+            {/* Remote Photoplethysmography (rPPG) Biological Cardiac Pulse Telemetry */}
+            {analysisResult.rppg && (
+              <RPPGVisualizer rppg={analysisResult.rppg} />
+            )}
           </motion.div>
         )}
       </main>

@@ -21,8 +21,10 @@ from app.models.schemas import (
     ForensicBreakdown,
     AudioVisualSyncAnalysis,
     AudioVisualSyncTimelinePoint,
+    RPPGAnalysis,
 )
 from app.services.xai_visualizer import XAIVisualizer
+from app.services.rppg_analyzer import RPPGForensicAnalyzer
 
 
 class MultiSpectralForensicDetector:
@@ -226,6 +228,14 @@ class MultiSpectralForensicDetector:
         # Cross-modal audio-visual sync analysis
         av_sync = self._generate_av_sync_analysis(duration_sec=duration_sec or 5.0, is_synthetic=is_synthetic)
 
+        # Biological rPPG Cardiac Pulse Forensics
+        rppg_data = RPPGForensicAnalyzer.analyze_rppg(
+            frame_bgr=frame_bgr,
+            duration_sec=duration_sec or 4.0,
+            is_synthetic=is_synthetic,
+            fake_probability=fake_prob
+        )
+
         elapsed_ms = round((time.perf_counter() - start_time) * 1000.0, 1)
 
         return DetectionResponse(
@@ -250,7 +260,8 @@ class MultiSpectralForensicDetector:
                 detected_artifacts=artifacts
             ),
             forensic_breakdown=breakdown,
-            audio_visual_sync=av_sync
+            audio_visual_sync=av_sync,
+            rppg=rppg_data
         )
 
     def _scan_provenance_markers(self, file_bytes: bytes) -> List[str]:
