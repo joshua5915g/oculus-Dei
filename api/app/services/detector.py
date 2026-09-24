@@ -22,9 +22,11 @@ from app.models.schemas import (
     AudioVisualSyncAnalysis,
     AudioVisualSyncTimelinePoint,
     RPPGAnalysis,
+    ELAForensicOutput,
 )
 from app.services.xai_visualizer import XAIVisualizer
 from app.services.rppg_analyzer import RPPGForensicAnalyzer
+from app.services.ela_inspector import ELAForensicInspector
 
 
 class MultiSpectralForensicDetector:
@@ -236,6 +238,15 @@ class MultiSpectralForensicDetector:
             fake_probability=fake_prob
         )
 
+        # Error Level Analysis (ELA) & C2PA Provenance Forensics
+        ela_data = ELAForensicInspector.analyze_ela(
+            frame_bgr=frame_bgr,
+            file_bytes=file_bytes,
+            is_synthetic=is_synthetic,
+            fake_probability=fake_prob,
+            provenance_findings=provenance_findings
+        )
+
         elapsed_ms = round((time.perf_counter() - start_time) * 1000.0, 1)
 
         return DetectionResponse(
@@ -261,7 +272,8 @@ class MultiSpectralForensicDetector:
             ),
             forensic_breakdown=breakdown,
             audio_visual_sync=av_sync,
-            rppg=rppg_data
+            rppg=rppg_data,
+            ela=ela_data
         )
 
     def _scan_provenance_markers(self, file_bytes: bytes) -> List[str]:

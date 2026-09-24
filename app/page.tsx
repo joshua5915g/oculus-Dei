@@ -9,6 +9,7 @@ import XAIViewer from "@/components/XAIViewer";
 import AudioVisualSyncChart from "@/components/AudioVisualSyncChart";
 import ForensicMetricsGrid from "@/components/ForensicMetricsGrid";
 import RPPGVisualizer from "@/components/RPPGVisualizer";
+import ELAInspector from "@/components/ELAInspector";
 import ExportReportModal from "@/components/ExportReportModal";
 import SystemTourGuide from "@/components/SystemTourGuide";
 import { analyzeMedia } from "@/lib/api";
@@ -402,6 +403,15 @@ export default function Home() {
             {/* Remote Photoplethysmography (rPPG) Biological Cardiac Pulse Telemetry */}
             {analysisResult.rppg && (
               <RPPGVisualizer rppg={analysisResult.rppg} />
+            )}
+
+            {/* Error Level Analysis (ELA) & C2PA Provenance Inspector */}
+            {analysisResult.ela && (
+              <ELAInspector
+                ela={analysisResult.ela}
+                originalFrame={analysisResult.xai.original_frame_base64}
+                dimensions={analysisResult.dimensions}
+              />
             )}
           </motion.div>
         )}

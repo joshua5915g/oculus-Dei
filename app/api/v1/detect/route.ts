@@ -127,9 +127,32 @@ export async function POST(request: NextRequest) {
       </svg>
     `;
 
+    const elaSvg = `
+      <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
+        <rect width="100%" height="100%" fill="#020108"/>
+        <!-- Background uniform noise -->
+        <filter id="elaNoise">
+          <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" result="noise"/>
+          <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.15 0"/>
+        </filter>
+        <rect width="100%" height="100%" filter="url(#elaNoise)" opacity="0.6"/>
+        <!-- Facial region error delta -->
+        <ellipse cx="640" cy="360" rx="200" ry="240" fill="${isSynthetic ? "#ff0055" : "#00f0ff"}" opacity="${isSynthetic ? 0.45 : 0.08}"/>
+        <ellipse cx="640" cy="430" rx="120" ry="80" fill="${isSynthetic ? "#ffb800" : "#00ff88"}" opacity="${isSynthetic ? 0.6 : 0.05}"/>
+        <!-- High error perimeter boundary seam -->
+        ${
+          isSynthetic
+            ? `<ellipse cx="640" cy="360" rx="195" ry="235" fill="none" stroke="#ff0055" stroke-width="6" stroke-dasharray="12,6" opacity="0.85"/>
+               <text x="50" y="80" fill="#ff0055" font-family="monospace" font-size="16" font-weight="bold">[ELA ERROR MULTIPLIER 25X: COMPRESSION SEAM DETECTED]</text>`
+            : `<text x="50" y="80" fill="#00ff88" font-family="monospace" font-size="16">[ELA ERROR MULTIPLIER 25X: UNIFORM QUANTIZATION SURFACE]</text>`
+        }
+      </svg>
+    `;
+
     const originalBase64 = `data:image/svg+xml;base64,${Buffer.from(originalSvg).toString("base64")}`;
     const heatmapBase64 = `data:image/svg+xml;base64,${Buffer.from(heatmapSvg).toString("base64")}`;
     const fftSpectrogramBase64 = `data:image/svg+xml;base64,${Buffer.from(fftSpectrogramSvg).toString("base64")}`;
+    const elaBase64 = `data:image/svg+xml;base64,${Buffer.from(elaSvg).toString("base64")}`;
 
     const detectedArtifacts: ArtifactAnnotation[] = isSynthetic
       ? [
@@ -266,6 +289,29 @@ export async function POST(request: NextRequest) {
             status: isSynthetic ? "CHAOTIC_VOID" : "NOMINAL",
           },
         ],
+      },
+      ela: {
+        ela_image_base64: elaBase64,
+        compression_discrepancy_score: isSynthetic ? 0.91 : 0.08,
+        grid_blockiness_index: isSynthetic ? 0.86 : 0.09,
+        prnu_sensor_snr: isSynthetic ? 3.4 : 22.8,
+        icc_profile_tampered: isSynthetic,
+        quantization_table_anomalous: isSynthetic,
+        c2pa_manifest: {
+          has_c2pa: isSynthetic,
+          signer: isSynthetic ? "AI Media Synthesis Consortium" : "Secure Hardware Camera CA",
+          claim_generator: isSynthetic ? "Generative Latent Upscaler v2.1" : "Hardware Enclave ISO-27037",
+          signature_valid: true,
+          ai_generation_flag: isSynthetic,
+          generation_tool: isSynthetic ? "Latent Diffusion Model" : "Physical CMOS Optical Sensor",
+          tamper_evident_status: isSynthetic ? "AI_GENERATED_DISCLOSED" : "VERIFIED_AUTHENTIC",
+          provenance_tags: isSynthetic
+            ? ["Google/IPTC trainedAlgorithmicMedia", "SynthID Spectral Watermark", "Latent Diffusion Model"]
+            : ["Hardware Attestation", "SHA-256 Valid", "Raw Sensor EXIF Intact"],
+        },
+        summary: isSynthetic
+          ? "Severe Error Level Analysis (ELA) quantization mismatch detected along facial seam boundaries. High compression error variance relative to background."
+          : "Uniform JPEG quantization error surface across full specimen geometry. Consistent PRNU photon noise floor.",
       },
     };
 
