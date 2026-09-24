@@ -12,6 +12,7 @@ import RPPGVisualizer from "@/components/RPPGVisualizer";
 import ELAInspector from "@/components/ELAInspector";
 import TemporalScrubber from "@/components/TemporalScrubber";
 import ComparativeLabModal from "@/components/ComparativeLabModal";
+import LiveDeepfakeShield from "@/components/LiveDeepfakeShield";
 import ExportReportModal from "@/components/ExportReportModal";
 import SystemTourGuide from "@/components/SystemTourGuide";
 import { analyzeMedia } from "@/lib/api";
@@ -42,6 +43,7 @@ export default function Home() {
   const [isTourActive, setIsTourActive] = useState<boolean>(false);
   const [isGuideModalOpen, setIsGuideModalOpen] = useState<boolean>(false);
   const [isCompareModalOpen, setIsCompareModalOpen] = useState<boolean>(false);
+  const [isLiveShieldOpen, setIsLiveShieldOpen] = useState<boolean>(false);
 
   // Mouse flashlight tracking
   const [cursorPos, setCursorPos] = useState<{ x: number; y: number }>({ x: -200, y: -200 });
@@ -206,6 +208,7 @@ export default function Home() {
         onOpenTour={() => setIsTourActive(true)}
         onOpenGuideModal={() => setIsGuideModalOpen(true)}
         onOpenCompare={() => setIsCompareModalOpen(true)}
+        onOpenLiveShield={() => setIsLiveShieldOpen(true)}
       />
 
       {/* 4. Main Forensic Workspace */}
@@ -274,6 +277,15 @@ export default function Home() {
                   >
                     <Scale className="w-3.5 h-3.5 text-[#d4af37]" />
                     <span>⚖️ Compare Lab</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setIsLiveShieldOpen(true)}
+                    className="flex items-center gap-2 px-3.5 py-2 rounded-sm bg-[#1c0812] hover:bg-[#2e0d1e] border border-[#ff0055]/50 text-[#ff80a0] font-mono text-xs tracking-wider uppercase cursor-pointer transition-all shadow-[0_0_12px_rgba(255,0,85,0.25)]"
+                  >
+                    <Radio className="w-3.5 h-3.5 text-[#ff0055] animate-pulse" />
+                    <span>🛡️ Live Shield</span>
                   </button>
 
                   <button
@@ -452,6 +464,12 @@ export default function Home() {
       <ComparativeLabModal
         isOpen={isCompareModalOpen}
         onClose={() => setIsCompareModalOpen(false)}
+      />
+
+      {/* Real-Time Live Stream & Webcam Deepfake Interceptor Modal */}
+      <LiveDeepfakeShield
+        isOpen={isLiveShieldOpen}
+        onClose={() => setIsLiveShieldOpen(false)}
       />
 
       {/* System Tour Guide & Capabilities Matrix Modal */}
