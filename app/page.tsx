@@ -13,6 +13,7 @@ import ELAInspector from "@/components/ELAInspector";
 import TemporalScrubber from "@/components/TemporalScrubber";
 import ComparativeLabModal from "@/components/ComparativeLabModal";
 import LiveDeepfakeShield from "@/components/LiveDeepfakeShield";
+import BatchIngestQueue, { BatchItem } from "@/components/BatchIngestQueue";
 import ExportReportModal from "@/components/ExportReportModal";
 import SystemTourGuide from "@/components/SystemTourGuide";
 import { analyzeMedia } from "@/lib/api";
@@ -32,6 +33,8 @@ import {
   Play,
   HelpCircle,
   Scale,
+  Globe,
+  Upload,
 } from "lucide-react";
 
 export default function Home() {
@@ -44,6 +47,7 @@ export default function Home() {
   const [isGuideModalOpen, setIsGuideModalOpen] = useState<boolean>(false);
   const [isCompareModalOpen, setIsCompareModalOpen] = useState<boolean>(false);
   const [isLiveShieldOpen, setIsLiveShieldOpen] = useState<boolean>(false);
+  const [ingestMode, setIngestMode] = useState<"single" | "batch">("single");
 
   // Mouse flashlight tracking
   const [cursorPos, setCursorPos] = useState<{ x: number; y: number }>({ x: -200, y: -200 });
@@ -175,6 +179,14 @@ export default function Home() {
     } finally {
       setIsAnalyzing(false);
     }
+  };
+
+  const handleSelectBatchItem = async (item: BatchItem) => {
+    const isSynthetic =
+      item.riskLevel === "CRITICAL" ||
+      item.riskLevel === "HIGH" ||
+      (item.fakeScore ?? 0) > 0.5;
+    await handleLoadSample(isSynthetic ? "deepfake_video" : "authentic_image", true);
   };
 
   const handleReset = () => {
@@ -345,19 +357,55 @@ export default function Home() {
           )}
         </AnimatePresence>
 
-        {/* Stage 1: File Ingestion Dropzone */}
+        {/* Stage 1: File Ingestion Dropzone & Batch Triage */}
         {!analysisResult && (
           <div className="space-y-4">
-            <Dropzone
-              onFileSelected={(file) => {
-                setSelectedFile(file);
-                setError(null);
-              }}
-              selectedFile={selectedFile}
-              onClearFile={() => setSelectedFile(null)}
-              onStartAnalysis={handleStartAnalysis}
-              isAnalyzing={isAnalyzing}
-            />
+            {/* Mode Selector Tabs */}
+            <div className="flex items-center gap-2 border-b border-white/10 pb-3 font-mono text-xs">
+              <button
+                type="button"
+                onClick={() => setIngestMode("single")}
+                className={`flex items-center gap-2 px-4 py-2 rounded-sm transition-all cursor-pointer ${
+                  ingestMode === "single"
+                    ? "bg-[#d4af37] text-black font-bold shadow-[0_0_15px_rgba(212,175,55,0.3)]"
+                    : "bg-[#060911] text-slate-400 hover:text-white border border-white/10"
+                }`}
+              >
+                <Upload className="w-3.5 h-3.5" />
+                <span>📁 SPECIMEN DROPZONE</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setIngestMode("batch")}
+                className={`flex items-center gap-2 px-4 py-2 rounded-sm transition-all cursor-pointer ${
+                  ingestMode === "batch"
+                    ? "bg-[#d4af37] text-black font-bold shadow-[0_0_15px_rgba(212,175,55,0.3)]"
+                    : "bg-[#060911] text-slate-400 hover:text-white border border-white/10"
+                }`}
+              >
+                <Globe className="w-3.5 h-3.5" />
+                <span>🌐 OSINT FEED & BATCH TRIAGE</span>
+              </button>
+            </div>
+
+            {ingestMode === "single" ? (
+              <Dropzone
+                onFileSelected={(file) => {
+                  setSelectedFile(file);
+                  setError(null);
+                }}
+                selectedFile={selectedFile}
+                onClearFile={() => setSelectedFile(null)}
+                onStartAnalysis={handleStartAnalysis}
+                isAnalyzing={isAnalyzing}
+              />
+            ) : (
+              <BatchIngestQueue
+                onSelectForInspection={handleSelectBatchItem}
+                isAnalyzing={isAnalyzing}
+              />
+            )}
           </div>
         )}
 
