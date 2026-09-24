@@ -10,6 +10,7 @@ import AudioVisualSyncChart from "@/components/AudioVisualSyncChart";
 import ForensicMetricsGrid from "@/components/ForensicMetricsGrid";
 import RPPGVisualizer from "@/components/RPPGVisualizer";
 import ELAInspector from "@/components/ELAInspector";
+import TemporalScrubber from "@/components/TemporalScrubber";
 import ExportReportModal from "@/components/ExportReportModal";
 import SystemTourGuide from "@/components/SystemTourGuide";
 import { analyzeMedia } from "@/lib/api";
@@ -411,6 +412,14 @@ export default function Home() {
                 ela={analysisResult.ela}
                 originalFrame={analysisResult.xai.original_frame_base64}
                 dimensions={analysisResult.dimensions}
+              />
+            )}
+
+            {/* Multi-Frame Video Temporal Consistency Scrubber */}
+            {analysisResult.temporal && (
+              <TemporalScrubber
+                temporal={analysisResult.temporal}
+                filename={analysisResult.filename}
               />
             )}
           </motion.div>

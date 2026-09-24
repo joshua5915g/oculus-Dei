@@ -313,6 +313,33 @@ export async function POST(request: NextRequest) {
           ? "Severe Error Level Analysis (ELA) quantization mismatch detected along facial seam boundaries. High compression error variance relative to background."
           : "Uniform JPEG quantization error surface across full specimen geometry. Consistent PRNU photon noise floor.",
       },
+      temporal: {
+        total_frames_analyzed: isVideo ? 210 : 1,
+        fps: 30,
+        jitter_variance: isSynthetic ? 8.4 : 0.4,
+        peak_anomaly_frame: isSynthetic ? 14 : 0,
+        temporal_stability_index: isSynthetic ? 0.18 : 0.94,
+        frames: Array.from({ length: 16 }, (_, i) => {
+          const frameIdx = i * 14;
+          const t = Math.round((frameIdx / 30) * 10) / 10;
+          const isSpike = isSynthetic && i >= 6 && i <= 9;
+          const anomaly = isSpike
+            ? 0.88 + Math.random() * 0.08
+            : isSynthetic
+            ? 0.55 + Math.random() * 0.15
+            : 0.03 + Math.random() * 0.04;
+          return {
+            frame_index: frameIdx,
+            timestamp_sec: t,
+            anomaly_score: Math.round(anomaly * 100) / 100,
+            face_boundary_jitter: isSpike ? 11.2 : isSynthetic ? 5.1 : 0.8,
+            optical_flow_discontinuity: isSpike ? 0.84 : isSynthetic ? 0.42 : 0.06,
+            flagged_artifact: isSpike ? "Facial boundary flicker & warp seam spike" : undefined,
+            is_spike: isSpike,
+            thumbnail_base64: originalBase64,
+          };
+        }),
+      },
     };
 
     return NextResponse.json(response);

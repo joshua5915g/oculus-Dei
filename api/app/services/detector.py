@@ -23,10 +23,12 @@ from app.models.schemas import (
     AudioVisualSyncTimelinePoint,
     RPPGAnalysis,
     ELAForensicOutput,
+    TemporalAnalysisReport,
 )
 from app.services.xai_visualizer import XAIVisualizer
 from app.services.rppg_analyzer import RPPGForensicAnalyzer
 from app.services.ela_inspector import ELAForensicInspector
+from app.services.temporal_analyzer import TemporalForensicAnalyzer
 
 
 class MultiSpectralForensicDetector:
@@ -247,6 +249,16 @@ class MultiSpectralForensicDetector:
             provenance_findings=provenance_findings
         )
 
+        # Multi-Frame Temporal Consistency Forensics (for video specimens)
+        temporal_data = None
+        if is_video or duration_sec:
+            temporal_data = TemporalForensicAnalyzer.analyze_temporal_sequence(
+                frame_bgr=frame_bgr,
+                duration_sec=duration_sec or 4.5,
+                is_synthetic=is_synthetic,
+                fake_probability=fake_prob
+            )
+
         elapsed_ms = round((time.perf_counter() - start_time) * 1000.0, 1)
 
         return DetectionResponse(
@@ -273,7 +285,8 @@ class MultiSpectralForensicDetector:
             forensic_breakdown=breakdown,
             audio_visual_sync=av_sync,
             rppg=rppg_data,
-            ela=ela_data
+            ela=ela_data,
+            temporal=temporal_data
         )
 
     def _scan_provenance_markers(self, file_bytes: bytes) -> List[str]:
