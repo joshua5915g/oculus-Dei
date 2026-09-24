@@ -43,6 +43,8 @@ export interface MediaDimensions {
   height: number;
 }
 
+export type Dimensions = MediaDimensions;
+
 // -------------------------------------------------------------
 // 1. Biological rPPG Cardiac & Blood Volume Pulse (BVP) Forensics
 // -------------------------------------------------------------
