@@ -11,6 +11,7 @@ import ForensicMetricsGrid from "@/components/ForensicMetricsGrid";
 import RPPGVisualizer from "@/components/RPPGVisualizer";
 import ELAInspector from "@/components/ELAInspector";
 import TemporalScrubber from "@/components/TemporalScrubber";
+import ComparativeLabModal from "@/components/ComparativeLabModal";
 import ExportReportModal from "@/components/ExportReportModal";
 import SystemTourGuide from "@/components/SystemTourGuide";
 import { analyzeMedia } from "@/lib/api";
@@ -29,6 +30,7 @@ import {
   Compass,
   Play,
   HelpCircle,
+  Scale,
 } from "lucide-react";
 
 export default function Home() {
@@ -39,6 +41,7 @@ export default function Home() {
   const [isReportModalOpen, setIsReportModalOpen] = useState<boolean>(false);
   const [isTourActive, setIsTourActive] = useState<boolean>(false);
   const [isGuideModalOpen, setIsGuideModalOpen] = useState<boolean>(false);
+  const [isCompareModalOpen, setIsCompareModalOpen] = useState<boolean>(false);
 
   // Mouse flashlight tracking
   const [cursorPos, setCursorPos] = useState<{ x: number; y: number }>({ x: -200, y: -200 });
@@ -202,6 +205,7 @@ export default function Home() {
         isAnalyzing={isAnalyzing}
         onOpenTour={() => setIsTourActive(true)}
         onOpenGuideModal={() => setIsGuideModalOpen(true)}
+        onOpenCompare={() => setIsCompareModalOpen(true)}
       />
 
       {/* 4. Main Forensic Workspace */}
@@ -261,6 +265,15 @@ export default function Home() {
                   >
                     <Play className="w-3.5 h-3.5 fill-current" />
                     <span>⚡ Instant Demo Case</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setIsCompareModalOpen(true)}
+                    className="flex items-center gap-2 px-3.5 py-2 rounded-sm bg-[#120f0a] hover:bg-[#1f1a10] border border-[#d4af37]/40 text-[#f7e7c4] font-mono text-xs tracking-wider uppercase cursor-pointer transition-all shadow-[0_0_12px_rgba(212,175,55,0.15)]"
+                  >
+                    <Scale className="w-3.5 h-3.5 text-[#d4af37]" />
+                    <span>⚖️ Compare Lab</span>
                   </button>
 
                   <button
@@ -434,6 +447,12 @@ export default function Home() {
           onClose={() => setIsReportModalOpen(false)}
         />
       )}
+
+      {/* Dual Evidence Comparative Forensic Lab Modal */}
+      <ComparativeLabModal
+        isOpen={isCompareModalOpen}
+        onClose={() => setIsCompareModalOpen(false)}
+      />
 
       {/* System Tour Guide & Capabilities Matrix Modal */}
       <SystemTourGuide

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { ShieldCheck, Cpu, Clock, Sparkles, Terminal, Activity } from "lucide-react";
+import { ShieldCheck, Cpu, Clock, Sparkles, Terminal, Activity, Scale, Radio } from "lucide-react";
 import { checkBackendHealth } from "@/lib/api";
 import { HealthResponse } from "@/lib/types";
 
@@ -10,6 +10,8 @@ interface HeaderProps {
   isAnalyzing: boolean;
   onOpenTour?: () => void;
   onOpenGuideModal?: () => void;
+  onOpenCompare?: () => void;
+  onOpenLiveShield?: () => void;
 }
 
 export default function Header({
@@ -17,6 +19,8 @@ export default function Header({
   isAnalyzing,
   onOpenTour,
   onOpenGuideModal,
+  onOpenCompare,
+  onOpenLiveShield,
 }: HeaderProps) {
   const [health, setHealth] = useState<HealthResponse | null>(null);
   const [currentTime, setCurrentTime] = useState<string>("");
@@ -109,6 +113,32 @@ export default function Header({
               <Clock className="w-3.5 h-3.5 text-[#d4af37]" />
               <span>{currentTime || "INITIALIZING..."}</span>
             </div>
+
+            {/* Comparative Lab Launcher Button */}
+            {onOpenCompare && (
+              <button
+                type="button"
+                onClick={onOpenCompare}
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-sm bg-[#120f0a] hover:bg-[#1f1a10] border border-[#d4af37]/40 hover:border-[#d4af37] text-[#f7e7c4] font-mono text-[11px] tracking-wider uppercase cursor-pointer transition-all shadow-[0_0_10px_rgba(212,175,55,0.15)] group"
+                title="Open Dual Evidence Comparative Forensic Lab"
+              >
+                <Scale className="w-3.5 h-3.5 text-[#d4af37] group-hover:scale-110 transition-transform" />
+                <span className="hidden sm:inline">Compare Lab</span>
+              </button>
+            )}
+
+            {/* Live Shield Launcher Button */}
+            {onOpenLiveShield && (
+              <button
+                type="button"
+                onClick={onOpenLiveShield}
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-sm bg-[#1c0812] hover:bg-[#2e0d1e] border border-[#ff0055]/40 hover:border-[#ff0055] text-[#ff80a0] font-mono text-[11px] tracking-wider uppercase cursor-pointer transition-all shadow-[0_0_10px_rgba(255,0,85,0.2)] group"
+                title="Launch Live Webcam & Synthetic Audio Stream Interceptor"
+              >
+                <Radio className="w-3.5 h-3.5 text-[#ff0055] animate-pulse" />
+                <span className="hidden sm:inline">Live Shield</span>
+              </button>
+            )}
 
             {/* Tour & Guide Launcher Button */}
             {onOpenGuideModal && (
